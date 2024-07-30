@@ -1,0 +1,228 @@
+import { SupabaseClient } from "@supabase/supabase-js";
+import {
+  createContext,
+  useContext,
+  useCallback,
+  useEffect,
+  useReducer,
+  useMemo,
+} from "react";
+import { removeLoadingState, safeUpdateState } from "~/helpers/reducer-helpers";
+import { createSBClientClient } from "~/lib/supabase";
+
+export type SupabaseContextState =
+  | "FETCHING_USER"
+  | "FETCHING_CREDITS"
+  | "IDLE"
+  | "USER_FETCHED"
+  | "CREDITS_FETCHED"
+  | "CREDITS_ERROR"
+  | "USER_ERROR";
+export interface SupabaseContextType {
+  user: any;
+  state: SupabaseContextState[];
+  credits?: number;
+  supabaseClient: SupabaseClient | null;
+  fetchUser?: () => void;
+  fetchCredits?: () => void;
+  updateCredits?: (credits: number) => void;
+}
+
+const initialState: SupabaseContextType = {
+  user: null,
+  state: ["FETCHING_USER"] as SupabaseContextState[],
+  supabaseClient: null,
+};
+
+const SupabaseContext = createContext<SupabaseContextType>(initialState);
+
+const supabaseReducer = (
+  state: SupabaseContextType,
+  action: { type: string; payload: any },
+) => {
+  switch (action.type) {
+    case "FETCHING_USER":
+    case "FETCHING_CREDITS":
+      return {
+        ...state,
+        state: [...state.state, action.type],
+      };
+
+    case "USER_FETCHED":
+      return {
+        ...state,
+        user: action.payload,
+        state: safeUpdateState(
+          removeLoadingState(state.state, "USER"),
+          "USER_FETCHED",
+        ),
+      };
+    case "CREDITS_FETCHED":
+      return {
+        ...state,
+        credits: action.payload,
+        state: safeUpdateState(
+          removeLoadingState(state.state, "CREDITS"),
+          "CREDITS_FETCHED",
+        ),
+      };
+    case "USER_ERROR":
+    case "CREDITS_ERROR":
+      return {
+        ...state,
+        state: safeUpdateState(
+          removeLoadingState(state.state, action.type),
+          action.type,
+        ),
+      };
+    default:
+      return state;
+  }
+};
+
+export const SupabaseContextProvider = ({
+  supabaseUrl,
+  supabaseAnonKey,
+  children,
+}: {
+  supabaseUrl?: string;
+  supabaseAnonKey?: string;
+  children: React.ReactNode;
+}) => {
+  const [state, dispatch] = useReducer(supabaseReducer, initialState);
+  const supabase = useMemo(
+    () => createSBClientClient(supabaseUrl, supabaseAnonKey),
+    [supabaseUrl, supabaseAnonKey],
+  );
+
+  const fetchUser = useCallback(async () => {
+    if (!supabase) {
+      return null;
+    }
+
+    dispatch({ type: "FETCHING_USER", payload: null });
+
+    const userResponse = await supabase?.auth.getUser().catch((error) => {
+      console.error("Error fetching user", error);
+    });
+
+    const userDetails = userResponse?.data.user;
+
+    if (!userDetails) {
+      dispatch({ type: "USER_ERROR", payload: null });
+      return null;
+    }
+    dispatch({ type: "USER_FETCHED", payload: userDetails });
+    return userDetails;
+  }, [supabase]);
+
+  const fetchCredits = useCallback(async () => {
+    if (!state.user?.email || !supabase) {
+      return;
+    }
+
+    dispatch({ type: "FETCHING_CREDITS", payload: null });
+
+    const { data, error } = await supabase
+      .from("UserSettings")
+      .select("credits")
+      .eq("user_email", state.user?.email)
+      .single();
+
+    let creditsResponse = data?.credits;
+
+    if (error) {
+      const createdCredits = await supabase
+        .from("UserSettings")
+        .upsert({ user_email: state.user.email, credits: 10 })
+        .select("credits")
+        .single();
+
+      if (createdCredits.error) {
+        console.error("Failed to create credits", createdCredits.error);
+        dispatch({ type: "CREDITS_ERROR", payload: null });
+        return;
+      }
+
+      if (createdCredits.data?.credits) {
+        creditsResponse = createdCredits.data.credits;
+      }
+    }
+
+    dispatch({ type: "CREDITS_FETCHED", payload: creditsResponse });
+
+    return creditsResponse;
+  }, [state.user, supabase]);
+
+  const updateCredits = useCallback(
+    async (credits: number) => {
+      if (!state.user?.email || !supabase) {
+        return;
+      }
+
+      const { error } = await supabase
+        .from("UserSettings")
+        .update({ credits })
+        .eq("user_email", state.user.email);
+
+      if (error) {
+        console.error("Failed to update credits", error);
+        dispatch({ type: "CREDITS_ERROR", payload: null });
+        return;
+      }
+
+      dispatch({ type: "CREDITS_FETCHED", payload: credits });
+    },
+    [state.user, supabase],
+  );
+
+  useEffect(() => {
+    fetchCredits();
+  }, [fetchCredits]);
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser]);
+
+  useEffect(() => {
+    const authSubscription = supabase?.auth.onAuthStateChange(
+      (event, session) => {
+        if (event === "SIGNED_IN") {
+          dispatch({ type: "USER_FETCHED", payload: session?.user });
+        }
+        if (event === "SIGNED_OUT") {
+          dispatch({ type: "USER_FETCHED", payload: null });
+        }
+      },
+    );
+
+    return () => {
+      authSubscription?.data.subscription.unsubscribe();
+    };
+  }, [fetchUser, supabase]);
+
+  const value = {
+    user: state.user,
+    state: state.state,
+    credits: state.credits,
+    supabaseClient: supabase,
+    fetchUser,
+    fetchCredits,
+    updateCredits,
+  };
+
+  return (
+    <SupabaseContext.Provider value={value}>
+      {children}
+    </SupabaseContext.Provider>
+  );
+};
+
+export const useSupabase = () => {
+  const context = useContext(SupabaseContext);
+  if (context === undefined) {
+    throw new Error(
+      "useSupabase must be used within a SupabaseContextProvider",
+    );
+  }
+  return context;
+};

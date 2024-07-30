@@ -1,0 +1,33 @@
+@import "vercel-toast/css";
+@import "@mdxeditor/editor/style.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.overflow-y-scroll::-webkit-scrollbar {
+  display: none !important;
+}
+
+.overflow-y-scroll {
+  -ms-overflow-style: none !important; /* IE and Edge */
+  scrollbar-width: none !important; /* Firefox */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.toast-inner {
+  padding: 1rem !important;
+}
+.toast-inner.success {
+  background-color: rgb(21, 128, 61) !important;
+  border-color: rgb(21, 128, 61) !important;
+}
