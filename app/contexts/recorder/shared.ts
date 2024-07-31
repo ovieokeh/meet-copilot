@@ -56,7 +56,6 @@ export const useBaseRecorder = ({
     (data: AudioRecorderProps) => {
       if (
         !appContext.selectedMeeting?.id ||
-        (!appContext.appSettings?.openaiApiKey && !supabase.credits) ||
         !appContext.user?.id ||
         !data.buffer
       )
@@ -92,10 +91,10 @@ export const useBaseRecorder = ({
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
-      appContext.appSettings?.openaiApiKey,
+      // appContext.appSettings?.openaiApiKey,
       appContext.user?.id,
       appContext.selectedMeeting?.id,
-      supabase.credits,
+      // supabase.credits,
       sender,
     ],
   );

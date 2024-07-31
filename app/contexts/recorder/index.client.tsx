@@ -189,7 +189,7 @@ export const RecorderProvider: React.FC<{
     micRecorderState.mediaStream.current,
   ]);
 
-  const handleTabAudioStream = (stream: MediaStream): void => {
+  const handleTabAudioStream = useCallback((stream: MediaStream): void => {
     const tabSpeechId = tabRecorderState.speechIdRef.current;
     if (!tabSpeechId) return;
 
@@ -216,7 +216,8 @@ export const RecorderProvider: React.FC<{
 
     audioRecorder.start(1000);
     dispatch({ type: "TAB_RECORDING" });
-  };
+  }, []);
+
   const startTabRecording = useCallback(async () => {
     const tabSpeechId = tabRecorderState.speechIdRef.current;
     if (!tabSpeechId) return;
@@ -240,7 +241,7 @@ export const RecorderProvider: React.FC<{
       tabRecorderState.mediaStream.current = stream;
       handleTabAudioStream(stream);
     }
-  }, [tabRecorderState.speechIdRef]);
+  }, []);
   const stopTabRecording = useCallback(() => {
     if (
       !state.state.includes("TAB_RECORDING") ||
@@ -258,7 +259,7 @@ export const RecorderProvider: React.FC<{
       headerBuffer: null,
       buffers: [],
     };
-  }, [state.state, tabRecorder.current, tabRecorderState.mediaStream.current]);
+  }, [state.state]);
 
   useEffect(() => {
     stopMicRecording();
