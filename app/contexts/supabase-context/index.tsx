@@ -31,6 +31,7 @@ export interface SupabaseContextType {
   fetchCredits?: () => void;
   updateCredits?: (credits: number) => Promise<void>;
   fetchOrders?: () => Promise<undefined | any[]>;
+  signOut?: () => Promise<void>;
 }
 
 const initialState: SupabaseContextType = {
@@ -243,6 +244,13 @@ export const SupabaseContextProvider = ({
     };
   }, [fetchUser, supabase]);
 
+  const signOut = useCallback(async () => {
+    await supabase?.auth.signOut();
+    dispatch({ type: "USER_FETCHED", payload: null });
+    dispatch({ type: "CREDITS_FETCHED", payload: null });
+    dispatch({ type: "ORDERS_FETCHED", payload: [] });
+  }, [supabase]);
+
   const value = {
     user: state.user,
     state: state.state,
@@ -253,6 +261,7 @@ export const SupabaseContextProvider = ({
     fetchCredits,
     updateCredits,
     fetchOrders,
+    signOut,
   };
 
   return (

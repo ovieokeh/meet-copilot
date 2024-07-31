@@ -144,16 +144,10 @@ export const UnauthenticatedAccessSettingsView = () => {
 };
 
 const AuthenticatedAccessSettingsView = () => {
-  const { user, credits, supabaseClient } = useSupabase();
+  const { user, credits, signOut } = useSupabase();
 
   const handleSignOut = async () => {
-    await supabaseClient?.auth.signOut();
-  };
-
-  const creditsToMinutes = (credits?: number) => {
-    if (!credits) return 0;
-    // 1 credit = 1 minute
-    return credits;
+    await signOut!();
   };
 
   return (
