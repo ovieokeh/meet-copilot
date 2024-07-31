@@ -235,8 +235,10 @@ export const HomeView = () => (
       <FeaturesSection />
       <TestimonialsSection />
 
-      <div className="max-w-2xl mx-auto text-center p-4 py-12 flex flex-col gap-4">
-        <h2 className="text-3xl font-semibold">Frequently Asked Questions</h2>
+      <div className="max-w-2xl mx-auto p-4 py-12 flex flex-col gap-4">
+        <h2 className="text-3xl font-semibold text-center ">
+          Frequently Asked Questions
+        </h2>
         <FAQView />
       </div>
       <CTASection />

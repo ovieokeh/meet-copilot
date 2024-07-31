@@ -30,8 +30,8 @@ export const FAQView = () => {
     },
     {
       question: "How does Meet Copilot work?",
-      answer:
-        "Meet Copilot uses the latest in AI technology to help you prepare for your interviews and meetings",
+      answer: `Meet Copilot uses accesses your tab audio as well as your mic audio and streams to the OpenAI Whisper Model to get transcripts.
+        These transcripts can then be supercharged with relevant info from the GPT-4 AI and your context`,
     },
     {
       question: "How can I get started with Meet Copilot?",

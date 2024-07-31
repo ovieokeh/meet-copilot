@@ -179,7 +179,7 @@ export const SupabaseContextProvider = ({
 
       const { error } = await supabase
         .from("UserSettings")
-        .update({ credits })
+        .update({ credits: (state.credits ?? 0) + credits })
         .eq("user_email", state.user.email);
 
       if (error) {

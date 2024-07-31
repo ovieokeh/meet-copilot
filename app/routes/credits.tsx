@@ -32,16 +32,16 @@ export default function CreditsPage() {
         </ul>
       </div>
 
+      <PricingTable isAuthed={!!user} />
+
       {user ? (
         <>
-          <AuthenticatedCreditsView />
           <AuthenticatedOrdersView />
+          <AuthenticatedCreditsView />
         </>
       ) : (
         <UnauthenticatedCreditsView />
       )}
-
-      <PricingTable isAuthed={!!user} />
     </div>
   );
 }
