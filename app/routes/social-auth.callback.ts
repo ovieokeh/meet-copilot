@@ -12,7 +12,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const headers = new Headers();
 
   if (code) {
-    const cookies = parseCookieHeader(request.headers.get("Cookie") ?? "");
     const supabase = createServerClient(
       process.env.VITE_SUPABASE_URL!,
       process.env.VITE_SUPABASE_PUBLIC_ANON_KEY!,

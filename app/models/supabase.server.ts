@@ -9,8 +9,8 @@ import { Database } from "~/lib/supabase-types";
 
 config();
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-const PUBLIC_ANON_KEY = import.meta.env.VITE_SUPABASE_PUBLIC_ANON_KEY;
+const SUPABASE_URL = process.env.VITE_SUPABASE_URL;
+const PUBLIC_ANON_KEY = process.env.VITE_SUPABASE_PUBLIC_ANON_KEY;
 
 export const createSBServerClient = (request: Request, headers: Headers) => {
   if (!SUPABASE_URL || !PUBLIC_ANON_KEY) {
