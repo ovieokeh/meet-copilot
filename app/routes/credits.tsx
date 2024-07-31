@@ -1,15 +1,13 @@
 import type { MetaFunction } from "@remix-run/node";
 import { FC } from "react";
+import PaymentButtons from "~/components/payment-buttons";
 import { SocialLoginButton } from "~/components/social-login-button";
 import { useSupabase } from "~/contexts/supabase-context";
 
 import { createMeta } from "~/helpers/create-meta";
 
 export const meta: MetaFunction = () =>
-  createMeta(
-    "Purchase Credits | Meet Copilot",
-    "Meet Copilot auth view",
-  );
+  createMeta("Purchase Credits | Meet Copilot", "Meet Copilot auth view");
 
 export default function CreditsPage() {
   const supabase = useSupabase();
@@ -96,21 +94,21 @@ const PricingTable: FC<{
 }> = ({ isAuthed = false }) => {
   const TIERS = [
     {
-      id: "starter",
+      id: "starter" as const,
       title: "Starter",
       price: "5",
       description: "For occasional users who need a few credits",
       credits: 100,
     },
     {
-      id: "pro",
+      id: "pro" as const,
       title: "Pro",
       price: "20",
       description: "For regular users who need more credits",
       credits: 500,
     },
     {
-      id: "power",
+      id: "power" as const,
       title: "Power",
       price: "50",
       description: "For power users who need a lot of credits",
@@ -131,12 +129,16 @@ const PricingTable: FC<{
             <span className="text-xl font-bold">${tier.price}</span> for{" "}
             <span className="font-bold">{tier.credits} credits</span>
           </p>
-          <button
-            className="mt-4 w-full py-2 px-4 bg-slate-700 text-slate-50 rounded-[4px]"
-            disabled={!isAuthed}
-          >
-            {isAuthed ? "Purchase" : "Sign in to purchase credits"}
-          </button>
+
+          {isAuthed ? (
+            <div className="mt-4">
+              <PaymentButtons order={tier} />
+            </div>
+          ) : (
+            <button className="mt-4 w-full py-2 px-4 bg-slate-700 text-slate-50 rounded-[4px]">
+              Sign in to purchase credits
+            </button>
+          )}
         </div>
       ))}
     </div>

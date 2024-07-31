@@ -189,3 +189,11 @@ export interface ClientUserSettings {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface PaymentOrder {
+  id: "starter" | "pro" | "power";
+  price: string;
+  credits: number;
+  description: string;
+  title: string;
+}

@@ -25,7 +25,7 @@ export interface SupabaseContextType {
   supabaseClient: SupabaseClient | null;
   fetchUser?: () => void;
   fetchCredits?: () => void;
-  updateCredits?: (credits: number) => void;
+  updateCredits?: (credits: number) => Promise<void>;
 }
 
 const initialState: SupabaseContextType = {

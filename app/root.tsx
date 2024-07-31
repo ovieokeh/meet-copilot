@@ -7,6 +7,7 @@ import {
   useLoaderData,
   useRouteError,
 } from "@remix-run/react";
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
 import Layout from "./components/layout";
 import stylesheet from "./tailwind.css?url";
@@ -46,7 +47,14 @@ export default function App() {
           supabaseUrl={loaderData.supabaseUrl}
           supabaseAnonKey={loaderData.supabaseAnonKey}
         >
-          <Layout />
+          <PayPalScriptProvider
+            options={{
+              clientId:
+                "AQ-WE1S9fQK5jrRaMc0Ktjm8m36iLM-YLHe5JA7_vlfmwDl6qv5EmakCGk2NkQ2ctQdz97cFfw_ziVa7",
+            }}
+          >
+            <Layout />
+          </PayPalScriptProvider>
         </SupabaseContextProvider>
         <ScrollRestoration />
         <Scripts />
