@@ -1,6 +1,6 @@
 import { OnApproveData, OnApproveActions } from "@paypal/paypal-js";
 import { PayPalButtons } from "@paypal/react-paypal-js";
-import { FC } from "react";
+import { FC, useState } from "react";
 import { useSupabase } from "~/contexts/supabase-context";
 import { PaymentOrder } from "~/types";
 
@@ -8,27 +8,49 @@ const PaymentButtons: FC<{
   order: PaymentOrder;
 }> = ({ order }) => {
   const supabase = useSupabase();
+  const [buttonState, setButtonState] = useState<"idle" | "loading" | "error">(
+    "idle",
+  );
 
   const createOrder = async () => {
+    setButtonState("loading");
     const origin = window.location.origin;
     const orderUrl = `${origin}/api/payment`;
-    const response = await fetch(orderUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      // use the "body" param to optionally pass additional order information
-      // like product ids and quantities
-      body: JSON.stringify({
-        type: "create",
-        payload: { ...order, origin },
-      }),
-    });
-    const responseJson = await response.json();
-    if (!supabase.user) {
-      return;
+
+    try {
+      const response = await fetch(orderUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        // use the "body" param to optionally pass additional order information
+        // like product ids and quantities
+        body: JSON.stringify({
+          type: "create",
+          payload: {
+            ...order,
+            origin,
+            id: `${order.id}-${supabase.user.id}-${Date.now()}`,
+          },
+        }),
+      });
+      const responseJson = await response.json();
+      if (!supabase.user) {
+        return;
+      }
+
+      supabase.fetchOrders!();
+      // construct the orderLink using the response from the server
+      const orderLink = `https://www.sandbox.paypal.com/checkoutnow?token=${responseJson.id}`;
+      window.open(orderLink, "_blank")?.focus();
+
+      setButtonState("idle");
+
+      return responseJson.id;
+    } catch (error) {
+      console.error("Failed to create order:", error);
+      setButtonState("error");
     }
-    return responseJson.id;
   };
   // const onApprove = async (data: OnApproveData, actions: OnApproveActions) => {
   //   const response = await fetch(
@@ -52,7 +74,22 @@ const PaymentButtons: FC<{
   //   alert(`Transaction completed by ${name}`);
   // };
 
-  return <button onClick={createOrder}>Buy Now</button>;
+  const orders = supabase.orders;
+
+  const hasExistingOrder = orders.some(
+    (o) => o.product === order.title && o.status === "CREATED",
+  );
+  const isDisabled = buttonState === "loading" || hasExistingOrder;
+
+  return (
+    <button
+      className={`border border-slate-100 px-4 py-2 ${isDisabled ? "opacity-50 pointer-events-none" : ""}`}
+      onClick={createOrder}
+      disabled={isDisabled}
+    >
+      Buy Now {hasExistingOrder ? `(There's a pending order)` : ""}
+    </button>
+  );
 };
 
 export default PaymentButtons;

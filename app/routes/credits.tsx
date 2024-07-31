@@ -32,7 +32,14 @@ export default function CreditsPage() {
         </ul>
       </div>
 
-      {user ? <AuthenticatedCreditsView /> : <UnauthenticatedCreditsView />}
+      {user ? (
+        <>
+          <AuthenticatedCreditsView />
+          <AuthenticatedOrdersView />
+        </>
+      ) : (
+        <UnauthenticatedCreditsView />
+      )}
 
       <PricingTable isAuthed={!!user} />
     </div>
@@ -41,7 +48,7 @@ export default function CreditsPage() {
 
 export const UnauthenticatedCreditsView = () => {
   return (
-    <div className="flex flex-col gap-4 max-w-lg">
+    <div className="flex flex-col gap-4 max-w-lg text-slate-50">
       <p className="">
         Sign in using your Google account to get 120 free credits (1 credit = 1
         chunk of transcription)
@@ -60,31 +67,64 @@ export const UnauthenticatedCreditsView = () => {
 const AuthenticatedCreditsView = () => {
   const { user, credits } = useSupabase();
 
-  const creditsToMinutes = (credits?: number) => {
-    if (!credits) return 0;
-    // 1 credit = 1 minute
-    return credits;
-  };
-
   return (
-    <div className="flex flex-col gap-4">
-      <p className="text-slate-900">
+    <div className="flex flex-col gap-4 text-slate-50">
+      <p>
         You are signed in as{" "}
-        <span className="font-bold text-slate-900">{user?.email}</span>
+        <span className="font-bold text-blue-200">{user?.email}</span>
       </p>
 
-      <p className="text-slate-900">
+      <p>
         You have{" "}
-        <span className="font-bold text-slate-900">{credits ?? 0} credits</span>{" "}
+        <span className="font-bold text-green-500">{credits ?? 0} credits</span>{" "}
         left
       </p>
 
-      <p className="text-slate-900">
-        <span className="font-bold text-slate-900">
-          This means {creditsToMinutes(credits)} minutes
+      <p>
+        <span className="font-bold text-green-500">
+          This means {credits} chunks
         </span>{" "}
         of meeting transcription
       </p>
+
+      <p>
+        A chunk is a segment of transcription that is less than 60 seconds. A
+        chunk is created when there's a pause in the conversation or when the
+        person speaks for more than 3 seconds.
+      </p>
+    </div>
+  );
+};
+
+const AuthenticatedOrdersView = () => {
+  const { orders } = useSupabase();
+
+  return (
+    <div className="flex flex-col gap-4 text-slate-50">
+      <h2 className="text-xl font-bold">Your Orders</h2>
+
+      {orders?.map((order) => (
+        <div key={order.id} className="flex gap-2">
+          <p>
+            <span className="font-bold">{order.product}</span> for{" "}
+            <span className="font-bold">{order.credits} credits </span>
+            <span className="text-sm">{`(${order.status})`}</span>
+          </p>
+          <p>
+            <a
+              href={`https://www.sandbox.paypal.com/checkoutnow?token=${order.order_id}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              View order
+            </a>
+          </p>
+        </div>
+      ))}
+
+      {orders?.length === 0 && (
+        <p className="text-slate-50">You have no orders yet</p>
+      )}
     </div>
   );
 };

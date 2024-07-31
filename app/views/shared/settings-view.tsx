@@ -78,8 +78,7 @@ export const SettingsView = ({
 
       <div className="flex flex-col gap-4 pb-4 overflow-y-scroll no-scrollbar h-[calc(100dvh-66px)]">
         <p className="text-md">
-          You can configure the integrations and behaviour of Meet Copilot
-          here.
+          You can configure the integrations and behaviour of Meet Copilot here.
         </p>
 
         {/* <label className="flex items-center gap-3 w-fit">
@@ -173,13 +172,6 @@ const AuthenticatedAccessSettingsView = () => {
       <Link to="/credits" className="text-blue-900 underline">
         Purchase credits
       </Link>
-
-      <p className="text-slate-900">
-        <span className="font-bold text-slate-900">
-          This means {creditsToMinutes(credits)} minutes
-        </span>{" "}
-        of meeting transcription
-      </p>
 
       <button
         className="bg-red-700 text-white rounded px-4 py-2 w-fit text-center hover:bg-red-900 transition-colors"
@@ -291,8 +283,8 @@ const AccessSettings = ({
               </span>
 
               <span className="">
-                If you have an OpenAI API Key, you can enter it here to use
-                Meet Copilot with GPT 3.5-turbo.
+                If you have an OpenAI API Key, you can enter it here to use Meet
+                Copilot with GPT 3.5-turbo.
               </span>
 
               <p className="">
@@ -408,8 +400,8 @@ const IntegrationSettings = ({
         <span className="font-bold">Connect Notion</span>
         <p className="text-base">
           <span>
-            Connect your Notion account to Meet Copilot for even more
-            insightful and useful responses. Why should you do this?
+            Connect your Notion account to Meet Copilot for even more insightful
+            and useful responses. Why should you do this?
           </span>
         </p>
         <ul className="list-disc ml-4">

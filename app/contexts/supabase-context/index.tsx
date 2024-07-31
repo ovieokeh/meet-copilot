@@ -13,24 +13,30 @@ import { createSBClientClient } from "~/lib/supabase";
 export type SupabaseContextState =
   | "FETCHING_USER"
   | "FETCHING_CREDITS"
+  | "FETCHING_ORDERS"
   | "IDLE"
   | "USER_FETCHED"
   | "CREDITS_FETCHED"
+  | "ORDERS_FETCHED"
   | "CREDITS_ERROR"
-  | "USER_ERROR";
+  | "USER_ERROR"
+  | "ORDERS_ERROR";
 export interface SupabaseContextType {
   user: any;
   state: SupabaseContextState[];
   credits?: number;
+  orders: any[];
   supabaseClient: SupabaseClient | null;
   fetchUser?: () => void;
   fetchCredits?: () => void;
   updateCredits?: (credits: number) => Promise<void>;
+  fetchOrders?: () => Promise<undefined | any[]>;
 }
 
 const initialState: SupabaseContextType = {
   user: null,
   state: ["FETCHING_USER"] as SupabaseContextState[],
+  orders: [],
   supabaseClient: null,
 };
 
@@ -43,6 +49,7 @@ const supabaseReducer = (
   switch (action.type) {
     case "FETCHING_USER":
     case "FETCHING_CREDITS":
+    case "FETCHING_ORDERS":
       return {
         ...state,
         state: [...state.state, action.type],
@@ -66,8 +73,18 @@ const supabaseReducer = (
           "CREDITS_FETCHED",
         ),
       };
+    case "ORDERS_FETCHED":
+      return {
+        ...state,
+        orders: action.payload,
+        state: safeUpdateState(
+          removeLoadingState(state.state, "ORDERS"),
+          "ORDERS_FETCHED",
+        ),
+      };
     case "USER_ERROR":
     case "CREDITS_ERROR":
+    case "ORDERS_ERROR":
       return {
         ...state,
         state: safeUpdateState(
@@ -176,12 +193,38 @@ export const SupabaseContextProvider = ({
     [state.user, supabase],
   );
 
+  const fetchOrders = useCallback(async () => {
+    if (!state.user?.email || !supabase) {
+      return;
+    }
+
+    dispatch({ type: "FETCHING_ORDERS", payload: null });
+
+    const { data, error } = await supabase
+      .from("UserOrders")
+      .select("*")
+      .eq("user_email", state.user?.email);
+
+    if (error) {
+      console.error("Failed to fetch orders", error);
+      dispatch({ type: "ORDERS_ERROR", payload: null });
+      return;
+    }
+
+    dispatch({ type: "ORDERS_FETCHED", payload: data });
+
+    return data;
+  }, [state.user, supabase]);
+
   useEffect(() => {
     fetchCredits();
   }, [fetchCredits]);
   useEffect(() => {
     fetchUser();
   }, [fetchUser]);
+  useEffect(() => {
+    fetchOrders();
+  }, [fetchOrders]);
 
   useEffect(() => {
     const authSubscription = supabase?.auth.onAuthStateChange(
@@ -205,9 +248,11 @@ export const SupabaseContextProvider = ({
     state: state.state,
     credits: state.credits,
     supabaseClient: supabase,
+    orders: state.orders,
     fetchUser,
     fetchCredits,
     updateCredits,
+    fetchOrders,
   };
 
   return (
