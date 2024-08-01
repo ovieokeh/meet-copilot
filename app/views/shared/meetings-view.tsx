@@ -59,11 +59,6 @@ export const MeetingsView = () => {
       </h2>
 
       <div className="flex flex-col gap-6 pb-4 overflow-y-scroll no-scrollbar h-[calc(100dvh-66px)]">
-        <p className="">
-          Your superpowered AI Meet Copilot is here to help you ace your
-          interviews!
-        </p>
-
         <div className="flex flex-col gap-2">
           <h3 className="text-slate-800 font-bold flex items-center gap-2">
             How to use Meet Copilot
@@ -82,8 +77,8 @@ export const MeetingsView = () => {
             <Link className="text-blue-500" to="/app/settings">
               Settings
             </Link>{" "}
-            with all the information you need for your interview will help
-            Meet Copilot provide you with the best insights!
+            with all the information you need for your interview will help Meet
+            Copilot provide you with the best insights!
           </p>
         ) : null}
 

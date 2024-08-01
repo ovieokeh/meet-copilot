@@ -1,4 +1,11 @@
-import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
+import {
+  Button,
+  Tab,
+  TabGroup,
+  TabList,
+  TabPanel,
+  TabPanels,
+} from "@headlessui/react";
 import { Link, useLocation, useNavigate } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { IoMdArrowRoundBack } from "react-icons/io";
@@ -14,6 +21,7 @@ import {
   setClientOnlyCookie,
 } from "~/lib/utils";
 import { SettingsAction } from "~/types";
+import { CloseAccountView } from "./close-account-view";
 
 type SettingsService =
   | "googleAccessToken"
@@ -168,7 +176,7 @@ const AuthenticatedAccessSettingsView = () => {
       </Link>
 
       <button
-        className="bg-red-700 text-white rounded px-4 py-2 w-fit text-center hover:bg-red-900 transition-colors"
+        className="border-red-700 border text-red-800 rounded px-4 py-2 w-fit text-center hover:bg-red-900 transition-colors"
         onClick={handleSignOut}
       >
         Sign out
@@ -192,6 +200,7 @@ const AccessSettings = ({
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useSupabase();
+  const [isCloseAccountViewOpen, setIsCloseAccountViewOpen] = useState(false);
 
   // client-side only cookie for redirecting after settings update
   useEffect(() => {
@@ -337,6 +346,20 @@ const AccessSettings = ({
           )}
         </div>
       </form>
+
+      <CloseAccountView
+        isOpen={isCloseAccountViewOpen}
+        onClose={() => setIsCloseAccountViewOpen(false)}
+      />
+
+      {user && (
+        <Button
+          className="bg-red-700 text-white rounded px-4 py-2 w-fit mt-4 text-center hover:bg-red-900 transition-colors"
+          onClick={() => setIsCloseAccountViewOpen(true)}
+        >
+          Delete account
+        </Button>
+      )}
     </div>
   );
 };

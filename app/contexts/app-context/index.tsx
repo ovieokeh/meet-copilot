@@ -50,6 +50,7 @@ export interface AppContextType extends AppContextState {
     meeting: Partial<ClientMeeting>,
     showToast?: boolean,
   ) => Promise<void>;
+  deleteUserData: () => void;
 }
 
 interface ActionObject {
@@ -201,6 +202,7 @@ export const AppContext = createContext<AppContextType>({
   createMeeting: async () => {},
   deleteMeeting: async () => {},
   updateMeeting: async () => {},
+  deleteUserData: () => {},
 });
 
 export const AppContextProvider = ({
@@ -574,6 +576,12 @@ export const AppContextProvider = ({
     [clientDatabase, state.appSettings],
   );
 
+  const deleteUserData = useCallback(() => {
+    dispatch({ type: "USER_FETCHED", payload: null });
+    dispatch({ type: "SETTINGS_FETCHED", payload: null });
+    dispatch({ type: "MEETINGS_FETCHED", payload: [] });
+  }, []);
+
   return (
     <AppContext.Provider
       value={{
@@ -584,6 +592,7 @@ export const AppContextProvider = ({
         updateMeeting,
         deleteMeeting,
         updateSettings,
+        deleteUserData,
       }}
     >
       {children}

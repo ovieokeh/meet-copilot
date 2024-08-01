@@ -32,6 +32,7 @@ export interface SupabaseContextType {
   updateCredits?: (credits: number) => Promise<void>;
   fetchOrders?: () => Promise<undefined | any[]>;
   signOut?: () => Promise<void>;
+  deleteUserData: () => Promise<void>;
 }
 
 const initialState: SupabaseContextType = {
@@ -39,6 +40,7 @@ const initialState: SupabaseContextType = {
   state: ["FETCHING_USER"] as SupabaseContextState[],
   orders: [],
   supabaseClient: null,
+  deleteUserData: async () => {},
 };
 
 const SupabaseContext = createContext<SupabaseContextType>(initialState);
@@ -150,20 +152,23 @@ export const SupabaseContextProvider = ({
     let creditsResponse = data?.credits;
 
     if (error) {
-      const createdCredits = await supabase
-        .from("UserSettings")
-        .upsert({ user_email: state.user.email, credits: 10 })
-        .select("credits")
-        .single();
+      if (error.code === "PGRST116") {
+        // This is the first time the user is logging in
+        const createdCredits = await supabase
+          .from("UserSettings")
+          .upsert({ user_email: state.user.email, credits: 120 })
+          .select("credits")
+          .single();
 
-      if (createdCredits.error) {
-        console.error("Failed to create credits", createdCredits.error);
-        dispatch({ type: "CREDITS_ERROR", payload: null });
-        return;
-      }
+        if (createdCredits.error) {
+          console.error("Failed to create credits", createdCredits.error);
+          dispatch({ type: "CREDITS_ERROR", payload: null });
+          return;
+        }
 
-      if (createdCredits.data?.credits) {
-        creditsResponse = createdCredits.data.credits;
+        if (createdCredits.data?.credits) {
+          creditsResponse = createdCredits.data.credits;
+        }
       }
     }
 
@@ -251,6 +256,17 @@ export const SupabaseContextProvider = ({
     dispatch({ type: "ORDERS_FETCHED", payload: [] });
   }, [supabase]);
 
+  const deleteUserData = useCallback(async () => {
+    if (!state.user?.email || !supabase) {
+      return;
+    }
+
+    await fetch("/api/supabase-user", {
+      method: "DELETE",
+    });
+    await supabase.auth.signOut();
+  }, [state.user, supabase]);
+
   const value = {
     user: state.user,
     state: state.state,
@@ -262,6 +278,7 @@ export const SupabaseContextProvider = ({
     updateCredits,
     fetchOrders,
     signOut,
+    deleteUserData,
   };
 
   return (

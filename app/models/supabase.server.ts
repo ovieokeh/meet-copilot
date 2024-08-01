@@ -10,14 +10,18 @@ import { Database } from "~/lib/supabase-types";
 config();
 
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL;
-const PUBLIC_ANON_KEY = process.env.VITE_SUPABASE_PUBLIC_ANON_KEY;
+const SUPABASE_SERVER_SECRET = process.env.SUPABASE_SERVER_SECRET;
 
 export const createSBServerClient = (request: Request, headers: Headers) => {
-  if (!SUPABASE_URL || !PUBLIC_ANON_KEY) {
+  if (!SUPABASE_URL || !SUPABASE_SERVER_SECRET) {
     throw new Error("Missing environment variables for Supabaase");
   }
 
-  return createServerClient<Database>(SUPABASE_URL, PUBLIC_ANON_KEY, {
+  return createServerClient<Database>(SUPABASE_URL, SUPABASE_SERVER_SECRET, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
     cookies: {
       getAll() {
         return parseCookieHeader(request.headers.get("Cookie") ?? "");

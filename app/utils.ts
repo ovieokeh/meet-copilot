@@ -1,8 +1,7 @@
 import { redirect } from "@remix-run/node";
 import { useMatches } from "@remix-run/react";
 import { useMemo } from "react";
-
-import type { User } from "~/models/user.server";
+import { ClientUser } from "./types";
 
 const DEFAULT_REDIRECT = "/";
 
@@ -39,7 +38,7 @@ export function useMatchesData(
   return route?.data as Record<string, unknown>;
 }
 
-function isUser(user: unknown): user is User {
+function isUser(user: unknown): user is ClientUser {
   return (
     user != null &&
     typeof user === "object" &&
@@ -48,7 +47,7 @@ function isUser(user: unknown): user is User {
   );
 }
 
-export function useOptionalUser(): User | undefined {
+export function useOptionalUser(): ClientUser | undefined {
   const data = useMatchesData("root");
   if (!data || !isUser(data.user)) {
     return undefined;
@@ -56,7 +55,7 @@ export function useOptionalUser(): User | undefined {
   return data.user;
 }
 
-export function useUser(): User {
+export function useUser(): ClientUser {
   const maybeUser = useOptionalUser();
   if (!maybeUser) {
     throw new Error(

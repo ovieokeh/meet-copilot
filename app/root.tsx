@@ -13,6 +13,7 @@ import Layout from "./components/layout";
 import stylesheet from "./tailwind.css?url";
 import { NotFoundView } from "./views/shared/not-found-view";
 import { SupabaseContextProvider } from "./contexts/supabase-context";
+import ConsentBanner from "./components/consent-banner";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
@@ -43,6 +44,7 @@ export default function App() {
         <Links />
       </head>
       <body className="h-full">
+        <ConsentBanner />
         <SupabaseContextProvider
           supabaseUrl={loaderData.supabaseUrl}
           supabaseAnonKey={loaderData.supabaseAnonKey}
