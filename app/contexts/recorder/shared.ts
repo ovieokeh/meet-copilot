@@ -11,12 +11,11 @@ import {
 import { useAppContext } from "../app-context";
 
 import { TranscriptionQueue } from "./transcription-queue";
-import { useSupabase } from "../supabase-context";
 
 const MIN_DECIBELS = -45;
 const SPEECH_THRESHOLD = 15;
 const SILENCE_THRESHOLD = 88;
-const MAX_BUFFER_TIME = 1000;
+const MAX_BUFFER_TIME = 500;
 
 const getUuidv4 = () => {
   return crypto.randomUUID();
@@ -50,10 +49,12 @@ export const useBaseRecorder = ({
   const { addJob: addTranscriptionJob } = new TranscriptionQueue(
     onSpeechReceived,
   );
-  const supabase = useSupabase();
 
   const emitAudioChunk = useCallback(
-    (data: AudioRecorderProps) => {
+    ({
+      isNewSpeaker = false,
+      ...data
+    }: AudioRecorderProps & { isNewSpeaker?: boolean }) => {
       if (
         !appContext.selectedMeeting?.id ||
         !appContext.user?.id ||
@@ -80,6 +81,7 @@ export const useBaseRecorder = ({
         openaiApiKey: appContext.appSettings?.openaiApiKey || "",
         sender: finalSender,
         ...data,
+        isLastChunk: isNewSpeaker || data.isLastChunk,
       };
 
       addTranscriptionJob({
@@ -90,13 +92,7 @@ export const useBaseRecorder = ({
       });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      // appContext.appSettings?.openaiApiKey,
-      appContext.user?.id,
-      appContext.selectedMeeting?.id,
-      // supabase.credits,
-      sender,
-    ],
+    [appContext.user?.id, appContext.selectedMeeting?.id, sender],
   );
 
   const detectSound = useCallback(() => {
@@ -127,9 +123,9 @@ export const useBaseRecorder = ({
     const silenceThresholdExceeded =
       silenceCounterRef.current > SILENCE_THRESHOLD;
 
-    if (isSoundDetected) {
-      speechCounterRef.current += 1;
+    speechCounterRef.current += 1;
 
+    if (isSoundDetected) {
       if (speakingThresholdExceeded) {
         silenceCounterRef.current = 0;
       }

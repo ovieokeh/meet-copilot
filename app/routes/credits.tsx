@@ -88,9 +88,9 @@ const AuthenticatedCreditsView = () => {
       </p>
 
       <p>
-        A chunk is a segment of transcription that is less than 60 seconds. A
-        chunk is created when there's a pause in the conversation or when the
-        person speaks for more than 3 seconds.
+        A chunk is a segment of transcription that is created when there's a
+        pause in the conversation longer than 88 milliseconds or when there's
+        speech for more than 0.5 seconds.
       </p>
     </div>
   );
