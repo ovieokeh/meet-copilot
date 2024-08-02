@@ -152,8 +152,12 @@ export const SupabaseContextProvider = ({
     let creditsResponse = data?.credits;
 
     if (error) {
-      if (error.code === "PGRST116") {
+      if (
+        error.code === "PGRST116" &&
+        error.details === "The result contains 0 rows"
+      ) {
         // This is the first time the user is logging in
+        console.log("Creating credits for the first time");
         const createdCredits = await supabase
           .from("UserSettings")
           .upsert({ user_email: state.user.email, credits: 120 })

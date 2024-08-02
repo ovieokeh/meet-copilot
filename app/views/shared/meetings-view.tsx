@@ -1,5 +1,4 @@
 import { Link } from "@remix-run/react";
-import { useEffect } from "react";
 
 import { useAppContext } from "~/contexts/app-context";
 import {
@@ -40,6 +39,27 @@ export const MeetingsView = () => {
     </div>
   );
 
+  const HOW_TO_USE_MEET_COPILOT = [
+    {
+      text: "In another tab, start a meeting in whatever software you use",
+    },
+    {
+      text: 'Start a new meeting in Meet Copilot by clicking "Start a new meeting"',
+    },
+    {
+      text: 'You can then click "Share tab audio" to share the audio from the meeting tab created above',
+    },
+    {
+      text: 'Click the "Start recording" button to record your own speech',
+    },
+    {
+      text: "You will get live transcripts of the recordings",
+    },
+    {
+      text: "! Make sure you can always visibly see Meet Copilot in a tab during the meeting to get transcripts",
+    },
+  ];
+
   const USE_CASES = [
     {
       text: "Transcribe your meetings or interviews so you can reflect on them later",
@@ -65,6 +85,16 @@ export const MeetingsView = () => {
           </h3>
 
           <ul className="list-disc list-inside">
+            {HOW_TO_USE_MEET_COPILOT.map((useCase, index) => (
+              <li key={index}>{useCase.text}</li>
+            ))}
+          </ul>
+
+          <h3 className="text-slate-800 font-bold flex items-center gap-2">
+            Use cases
+          </h3>
+
+          <ul className="list-disc list-inside">
             {USE_CASES.map((useCase, index) => (
               <li key={index}>{useCase.text}</li>
             ))}
@@ -82,7 +112,7 @@ export const MeetingsView = () => {
           </p>
         ) : null}
 
-        <div className="flex flex-col gap-2 bg-slate-100 p-2 rounded h-[50%] overflow-y-scroll no-scrollbar">
+        <div className="flex flex-col gap-2 bg-slate-100 p-2 rounded h-[47%] overflow-y-scroll no-scrollbar">
           {appContext && appContext.meetings ? (
             <div className="flex flex-col gap-4 max-w-xl">
               {optionallyRenderComponent(
