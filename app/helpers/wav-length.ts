@@ -13,34 +13,29 @@ interface WavHeader {
   subChunk2Id: string;
   subChunk2Size: number;
 }
+const audioContext = new AudioContext();
 
-export function getWavDuration(arrayBuffer: ArrayBuffer): number {
-  const dataView = new DataView(arrayBuffer);
+export async function getWavDuration(
+  arrayBuffer: ArrayBuffer,
+): Promise<number> {
+  try {
+    // Decode the audio data contained in the ArrayBuffer
+    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
 
-  const header: WavHeader = {
-    chunkId: getString(dataView, 0, 4),
-    chunkSize: dataView.getUint32(4, true),
-    format: getString(dataView, 8, 4),
-    subChunk1Id: getString(dataView, 12, 4),
-    subChunk1Size: dataView.getUint32(16, true),
-    audioFormat: dataView.getUint16(20, true),
-    numChannels: dataView.getUint16(22, true),
-    sampleRate: dataView.getUint32(24, true),
-    byteRate: dataView.getUint32(28, true),
-    blockAlign: dataView.getUint16(32, true),
-    bitsPerSample: dataView.getUint16(34, true),
-    subChunk2Id: getString(dataView, 36, 4),
-    subChunk2Size: dataView.getUint32(40, true),
-  };
+    // Duration is a property of AudioBuffer, provided in seconds
+    const durationInSeconds = audioBuffer.duration;
 
-  if (header.chunkId !== "RIFF" || header.format !== "WAVE") {
-    throw new Error("Invalid WAV file format");
+    // Convert seconds to milliseconds
+    const durationInMilliseconds = durationInSeconds * 1000;
+
+    return durationInMilliseconds;
+  } catch (error) {
+    console.error("Error decoding audio data:", error);
+    throw error;
+  } finally {
+    // Close the audio context to release system resources
+    audioContext.close();
   }
-
-  // Calculate duration in milliseconds
-  const duration = (header.subChunk2Size / header.byteRate) * 1000;
-
-  return duration;
 }
 
 function getString(view: DataView, offset: number, length: number): string {
