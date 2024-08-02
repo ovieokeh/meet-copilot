@@ -14,7 +14,7 @@ const SUPABASE_SERVER_SECRET = process.env.SUPABASE_SERVER_SECRET;
 
 export const createSBServerClient = (request: Request, headers: Headers) => {
   if (!SUPABASE_URL || !SUPABASE_SERVER_SECRET) {
-    throw new Error("Missing environment variables for Supabaase");
+    throw new Error("Missing environment variables for Supabase");
   }
 
   return createServerClient<Database>(SUPABASE_URL, SUPABASE_SERVER_SECRET, {
