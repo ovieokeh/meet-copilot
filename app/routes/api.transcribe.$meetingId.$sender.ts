@@ -60,12 +60,10 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
   const [_, transcription] = await Promise.allSettled(promises);
 
-  return createResponse(
-    transcription.status === "fulfilled"
-      ? transcription.value
-      : {
-          status: 500,
-          body: { error: "An error occurred while transcribing the audio" },
-        },
-  );
+  return transcription.status === "fulfilled"
+    ? createResponse(transcription.value)
+    : createResponse({
+        status: 500,
+        body: { error: transcription.reason },
+      });
 };
