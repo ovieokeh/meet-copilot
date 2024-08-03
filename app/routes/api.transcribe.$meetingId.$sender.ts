@@ -41,19 +41,24 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     }
 
     openaiApiKey = process.env.OPENAI_API_KEY;
-    await supabase
-      .from("UserSettings")
-      .update({ credits: credits - 1 })
-      .eq("user_email", supbaseUserEmail!);
   }
 
   const buffer = await request.arrayBuffer();
-  const transcription = await transcriberHandler({
-    audioBuffer: buffer,
-    openaiApiKey,
-    meetingId: meetingId!,
-    sender: sender!,
-  });
+
+  const promises = [
+    supabase
+      .from("UserSettings")
+      .update({ credits: credits - 1 })
+      .eq("user_email", supbaseUserEmail!),
+    transcriberHandler({
+      audioBuffer: buffer,
+      openaiApiKey,
+      meetingId: meetingId!,
+      sender: sender!,
+    }),
+  ];
+
+  const [_, transcription] = await Promise.allSettled(promises);
 
   return createResponse(transcription);
 };
