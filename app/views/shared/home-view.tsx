@@ -32,17 +32,22 @@ const TESTIMONIALS = [
   {
     text: "Meet Copilot has been a game-changer for me. I always used to struggle with what to say in interviews, but now I can lead the conversation!",
     author: "Callie",
-    position: "Product Manager at XYZ",
+    position: "Job Seeker",
   },
   {
     text: "My memory isn't what it used to be, so I love that Meet Copilot transcribes my meetings for me. It's like having a personal assistant!",
     author: "Michael",
-    position: "CEO at ABC",
+    position: "Teacher",
   },
   {
-    text: "Wow so I tried Meet Copilot on an interview the other day and it was like having a cheat sheet in an exam. The interview went really well, I had answers to every question, and I was even relaxed enough to throw in some jokes!",
+    text: "Wow so I tried Meet Copilot on an interview the other day and it was like having a cheat sheet in an exam. I had answers to every question, and I was even relaxed enough to throw in some jokes!",
     author: "Diana",
-    position: "Software Engineer at DEF",
+    position: "Job Seeker",
+  },
+  {
+    text: "By recording my standups, I have a complete record of pending work and can easily follow up on tasks. It's a huge time saver!",
+    author: "Neema",
+    position: "Software Engineer at Finch",
   },
 ];
 
@@ -51,7 +56,7 @@ const HeroSection = () => (
     <div className="flex items-center relative sm:min-h-[520px] sm:max-w-screen-xl mx-auto sm:rounded-lg">
       <div className="relative text-center sm:text-left sm:rounded-lg p-4 py-16 flex flex-col gap-4 grow w-1/2 overflow-hidden">
         <h1 className="text-2xl sm:text-4xl font-semibold text-slate-800 sm:w-full relative">
-          Your interview{" "}
+          Your meetings{" "}
           <TextSwitcher
             texts={[
               {
