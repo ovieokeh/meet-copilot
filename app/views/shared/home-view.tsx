@@ -1,4 +1,5 @@
 import { Link } from "@remix-run/react";
+import { SocialProofBanner } from "~/components/social-proof";
 
 import { TextSwitcher } from "~/components/text-switcher";
 import { FAQView } from "~/routes/faq";
@@ -50,7 +51,7 @@ const HeroSection = () => (
     <div className="flex items-center relative sm:min-h-[520px] sm:max-w-screen-xl mx-auto sm:rounded-lg">
       <div className="relative text-center sm:text-left sm:rounded-lg p-4 py-16 flex flex-col gap-4 grow w-1/2 overflow-hidden">
         <h1 className="text-2xl sm:text-4xl font-semibold text-slate-800 sm:w-full relative">
-          Say hello to your interview{" "}
+          Your interview{" "}
           <TextSwitcher
             texts={[
               {
@@ -231,6 +232,7 @@ const CTASection = () => (
 export const HomeView = () => (
   <div className="flex flex-col sm:gap-0 w-full">
     <HeroSection />
+    <SocialProofBanner />
     <div className="z-20 bg-gradient-to-b from-slate-800 via-slate-900 to-slate-800 text-slate-50">
       <FeaturesSection />
       <TestimonialsSection />
