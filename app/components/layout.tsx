@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { ClientDatabaseContextProvider } from "~/contexts/client-database-context";
 
 import { NavigationBottom, NavigationTop } from "./navigation";
+import ConsentBanner from "./consent-banner";
 
 const Layout = () => {
   const location = useLocation();
@@ -28,6 +29,7 @@ const Layout = () => {
     >
       <ClientDatabaseContextProvider>
         <div className="w-full max-w-[1920px] mx-auto">
+          <ConsentBanner />
           <NavigationTop />
           <Outlet />
           <NavigationBottom />

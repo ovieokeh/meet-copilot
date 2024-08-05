@@ -61,8 +61,9 @@ const NavLink = ({
     <a
       href={link.href}
       className={twMerge(
-        "inline-block",
-        isActive ? "text-slate-300" : "text-slate-50",
+        "inline-block px-4 py-2 rounded-md hover:bg-slate-800 hover:text-slate-50 transition-colors ease-in-out duration-300",
+        isActive ? "text-slate-300" : "text-slate-300",
+        link.href === "/app" ? "bg-blue-700 text-slate-50" : "",
         className,
       )}
     >
@@ -120,7 +121,7 @@ export const NavigationTop = () => {
           Meet Copilot
         </a>
 
-        <div className="hidden md:flex gap-4">
+        <div className="hidden md:flex gap-2">
           {TOP_LINKS.map((link, index) => (
             <NavLink
               key={index}
@@ -177,8 +178,11 @@ export const NavigationBottom = () => {
   if (!shouldRender) return null;
 
   return (
-    <nav className="bg-slate-100 text-slate-900 flex items-center justify-center w-full">
-      <div className="flex items-center flex-wrap justify-between gap-4 p-4 sm:p-8">
+    <nav
+      style={{ zIndex: 9999999999 }}
+      className="z-20 py-12 sm:py-4  bg-slate-100 relative text-slate-900 w-full"
+    >
+      <div className="flex flex-col sm:flex-row sm:items-center flex-wrap sm:justify-between gap-6 p-2 sm:p-8 sm:max-w-2xl sm:mx-auto">
         {BOTTOM_LINKS.map((link, index) => (
           <NavLink
             key={index}

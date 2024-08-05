@@ -1,6 +1,7 @@
 import { Transition } from "@headlessui/react";
 import { Link, useLocation } from "@remix-run/react";
 import { useEffect, useState } from "react";
+import { BiCookie } from "react-icons/bi";
 
 type Timezone = string;
 type Language = string;
@@ -139,10 +140,10 @@ const ConsentBanner = () => {
       {bannerVisibility === "minimized" ? (
         <div className="fixed bottom-12 left-4 z-50">
           <button
-            className="border-slate-50 bg-slate-200 text-slate-700 px-4 py-2 rounded"
+            className="border-slate-50 bg-slate-200 text-slate-700 px-4 py-2 rounded-full"
             onClick={() => setBannerVisibility("expanded")}
           >
-            Cookie consent
+            <BiCookie className="size-8" />
           </button>
         </div>
       ) : (

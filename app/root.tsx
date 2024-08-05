@@ -44,7 +44,6 @@ export default function App() {
         <Links />
       </head>
       <body className="h-full">
-        <ConsentBanner />
         <SupabaseContextProvider
           supabaseUrl={loaderData.supabaseUrl}
           supabaseAnonKey={loaderData.supabaseAnonKey}
@@ -56,15 +55,14 @@ export default function App() {
             }}
           >
             <Layout />
+            <script
+              src="https://code.tidio.co/05oalilgkzbydhkehirqbisweeqbartp.js"
+              async
+            ></script>
           </PayPalScriptProvider>
         </SupabaseContextProvider>
         <ScrollRestoration />
         <Scripts />
-
-        <script
-          src="https://code.tidio.co/05oalilgkzbydhkehirqbisweeqbartp.js"
-          async
-        ></script>
       </body>
     </html>
   );
