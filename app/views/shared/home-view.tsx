@@ -1,4 +1,5 @@
 import { Link } from "@remix-run/react";
+import { MarkdownText } from "~/components/markdown-text";
 import { SocialProofBanner } from "~/components/social-proof";
 
 import { TextSwitcher } from "~/components/text-switcher";
@@ -6,23 +7,41 @@ import { FAQView } from "~/routes/faq";
 
 const HOW_IT_WORKS = [
   {
-    title: "Interview Copilot",
+    title: "How it works",
     description:
       "Use Meet Copilot to help you ace your interviews by providing you with real-time insights and summaries.",
     walkthroughs: [
       {
-        video: "/videos/connect-notion.mp4",
-        description: "Connect your meeting notes through Notion",
+        title: "Accessing Meet Copilot",
+        url: "/images/access-ss.png",
+        description: `Sign up for a free account and get started with Meet Copilot (you get free credits to try the app!). No credit card required.
+        Add an OpenAI API key to get automatic answers (You can get one for free at https://openai.com/signup/)
+          `,
       },
       {
-        video: "/videos/add-openai-api-key.mp4",
-        description:
-          "Add an OpenAI API key to get automatic answers (You can get one for free at https://openai.com/signup/)",
+        title: "Connecting your calendar and Notion",
+        url: "/images/integrations-ss.png",
+        description: `If you want, you can connect your Google Calendar to get notifications and tailored insights for your upcoming interviews.
+        You can also connect your Notion account to save your meeting notes and to provide additional context to Meet Copilot. 
+          `,
       },
       {
-        video: "/videos/new-meeting.mp4",
-        description:
-          "Start a new meeting and get automatic answers, summaries, use action buttons to generate responses, and more!",
+        title: "Starting a meeting",
+        url: "/images/meeting-view-ss.png",
+        description: `This is what a meeting could look like in Meet Copilot. You can see the transcript, the summary, and the generated responses.
+You can also use the action buttons to do more like
+
+- Generate responses
+- Get a summary of the meeting
+- Get answers to questions
+        `,
+      },
+      {
+        title: "Customizing your experience",
+        url: "/images/meeting-settings-ss.png",
+        description: `You can customize your experience by changing the settings to suit your needs. 
+        For example, you can provide context or instructions to Meet Copilot to help it better understand your meetings and provide better insights.
+        `,
       },
     ],
   },
@@ -117,13 +136,10 @@ const FeaturesSection = () => {
       <div className="flex flex-col gap-4 px-4 py-16 sm:bg-slate-100 sm:text-slate-900 items-center w-full">
         <h2 className="text-3xl font-semibold">What is Meet Copilot?</h2>
         <p className="sm:text-xl flex flex-col sm:items-center gap-6 max-w-screen-md leading-10">
-          <span className="leading-10">
-            Meet Copilot is at it's core, a digital assistant. It plugs into
-            your interviews silently and gives you superpowers like instant
-            answers to any question, summaries of what's been said, and even the
-            ability to generate responses for you.
-          </span>
-          <span className="font-semibold">Here is how it works</span>
+          Meet Copilot is at it's core, a digital assistant. It plugs into your
+          interviews silently and gives you superpowers like instant answers to
+          any question, summaries of what's been said, and even the ability to
+          generate responses for you.
         </p>
       </div>
 
@@ -131,38 +147,39 @@ const FeaturesSection = () => {
         return (
           <div
             key={section.title}
-            className={`flex flex-col gap-4 sm:gap-16 p-4 sm:p-8 sm:py-20 text-white`}
+            className={`flex flex-col gap-8 sm:gap-16 p-4 sm:p-8 sm:py-20 text-white`}
           >
-            <div className="sm:max-w-screen-md sm:mx-auto text-left flex flex-col gap-2">
-              <h3 className="text-2xl font-semibold">{section.title}</h3>
-              <p className="text-sm sm:text-xl">{section.description}</p>
+            <div className="sm:max-w-screen-md sm:mx-auto">
+              <h3 className="text-2xl font-semibold text-center">
+                {section.title}
+              </h3>
             </div>
 
-            <div className="flex flex-col gap-8 sm:gap-12">
+            <div className="flex flex-col gap-8 sm:gap-36 max-w-[1240px]">
               {section.walkthroughs.map((walkthrough, index) => {
                 return (
                   <div
                     key={walkthrough.description}
-                    className={`flex flex-col gap-1 sm:gap-4 sm:items-center sm:mx-auto ${
+                    className={`flex flex-col gap-4 sm:flex-row sm:gap-4 sm:mx-auto ${
                       index % 2 === 0 ? "" : ""
                     }`}
                   >
-                    <video
-                      controls
-                      className="w-full h-64 sm:w-[500px] h- object-contain rounded sm:rounded-lg"
-                    >
-                      <source src={walkthrough.video} type="video/mp4" />
-                      <p>
-                        Your browser does not support the video tag. Please
-                        download the video instead.
-                        <a href={walkthrough.video}>Download Video</a>
-                      </p>
-                      <track kind="captions" />
-                    </video>
-
-                    <p className="text-center sm:text-xl max-w-[380px] text-slate-200 ">
-                      {walkthrough.description}
-                    </p>
+                    <div className="flex flex-col gap-2 text-left sm:w-1/3">
+                      <h4 className="text-xl font-semibold">
+                        {walkthrough.title}
+                      </h4>
+                      <MarkdownText
+                        text={walkthrough.description}
+                        childrenClassName={{
+                          a: "text-slate-200",
+                        }}
+                      />
+                    </div>
+                    <img
+                      className="block h-auto sm:w-2/3 grow object-cover rounded sm:rounded-lg"
+                      src={walkthrough.url}
+                      alt={walkthrough.title}
+                    />
                   </div>
                 );
               })}
