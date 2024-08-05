@@ -27,6 +27,11 @@ const NAV_LINKS: NavLinkType[] = [
     position: ["top", "bottom"],
   },
   {
+    name: "Contact",
+    href: "/contact",
+    position: ["top", "bottom"],
+  },
+  {
     name: "Privacy Policy",
     href: "/privacy-policy",
     position: ["bottom"],

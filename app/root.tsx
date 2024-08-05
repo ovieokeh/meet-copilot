@@ -60,6 +60,11 @@ export default function App() {
         </SupabaseContextProvider>
         <ScrollRestoration />
         <Scripts />
+
+        <script
+          src="https://code.tidio.co/05oalilgkzbydhkehirqbisweeqbartp.js"
+          async
+        ></script>
       </body>
     </html>
   );
