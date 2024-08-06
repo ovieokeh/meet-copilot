@@ -3,6 +3,12 @@ import { Link, useLocation } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { BiCookie } from "react-icons/bi";
 
+declare global {
+  interface Window {
+    gtag: any;
+  }
+}
+
 type Timezone = string;
 type Language = string;
 
@@ -130,9 +136,32 @@ const ConsentBanner = () => {
     }
   }, [location.pathname]);
 
-  const close = () => {
+  const deny = () => {
+    localStorage.setItem("hasConsented", "false");
+    setBannerVisibility("hidden");
+
+    if (!window.gtag) return;
+
+    window.gtag("consent", "default", {
+      ad_storage: "denied",
+      ad_user_data: "denied",
+      ad_personalization: "denied",
+      analytics_storage: "denied",
+    });
+  };
+
+  const accept = () => {
     localStorage.setItem("hasConsented", "true");
     setBannerVisibility("minimized");
+
+    if (!window.gtag) return;
+
+    window.gtag("consent", "update", {
+      ad_storage: "granted",
+      ad_user_data: "granted",
+      ad_personalization: "granted",
+      analytics_storage: "granted",
+    });
   };
 
   return (
@@ -151,21 +180,31 @@ const ConsentBanner = () => {
           <p className="flex flex-col gap-2">
             <span className="font-semibold">Cookie consent:</span>
             <span>
-              We use cookies to improve your experience on our site. By using
-              our site, you consent to our use of cookies. To learn more, read
-              our
+              We use cookies to improve your experience on our site. To learn
+              more, read our
               <Link to="/privacy-policy" className="pl-1 underline">
                 privacy policy.
               </Link>
+            </span>
+            <span>
+              Please note that if you choose to use the service (even if you
+              deny consent), you agree to the use of some minimum required
+              cookies. This is necessary for the service to function
             </span>
           </p>
 
           <div className="flex gap-2">
             <button
-              className="bg-slate-700 border text-slate-50 px-4 py-2 mt-2 rounded"
-              onClick={close}
+              className="border-slate-700 border text-slate-700 px-4 py-2 mt-2 rounded"
+              onClick={deny}
             >
-              Close
+              Deny
+            </button>
+            <button
+              className="bg-slate-700 border text-slate-50 px-4 py-2 mt-2 rounded"
+              onClick={accept}
+            >
+              Accept
             </button>
           </div>
         </div>
