@@ -96,7 +96,7 @@ const HeroSection = () => (
 
         <ul>
           {[
-            "Do you get nervous during interviews and blank out?",
+            "Have you ever wished you could remember everything that was said in a meeting?",
             `Ever left an interview thinking "I should have asked this question or said that"?`,
             `Or maybe you want ready access to whatever information you need during interviews at the click of a button?`,
           ].map((text) => (
