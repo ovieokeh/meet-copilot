@@ -15,7 +15,7 @@ export default function CreditsPage() {
   const user = supabase.user;
 
   return (
-    <div className="flex flex-col gap-8 min-h-[85dvh] text-slate-50 bg-slate-900 px-4 py-12">
+    <div className="flex flex-col gap-8 min-h-[95dvh] text-slate-50 bg-slate-900 px-8 py-12">
       <h1 className="text-3xl font-bold">Purchase Credits</h1>
 
       <div className="flex flex-col gap-4">

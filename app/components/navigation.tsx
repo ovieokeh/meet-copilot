@@ -12,18 +12,13 @@ interface NavLinkType {
 
 const NAV_LINKS: NavLinkType[] = [
   {
-    name: "Home",
-    href: "/",
-    position: ["top"],
+    name: "FAQ",
+    href: "/faq",
+    position: ["top", "bottom"],
   },
   {
     name: "Pricing",
     href: "/credits",
-    position: ["top", "bottom"],
-  },
-  {
-    name: "FAQ",
-    href: "/faq",
     position: ["top", "bottom"],
   },
   {
@@ -116,7 +111,7 @@ export const NavigationTop = () => {
 
   return (
     <nav className="h-[60px] sticky top-0 z-30">
-      <div className="bg-slate-900 text-slate-50 mx-auto flex items-center justify-between p-4">
+      <div className="bg-slate-900 text-slate-50 mx-auto flex items-center justify-between p-4 sm:p-8">
         <a href="/" className="font-bold text-xl">
           Meet Copilot
         </a>
@@ -182,7 +177,7 @@ export const NavigationBottom = () => {
       style={{ zIndex: 9999999999 }}
       className="z-20 py-12 sm:py-4  bg-slate-100 relative text-slate-900 w-full"
     >
-      <div className="flex flex-col sm:flex-row sm:items-center flex-wrap sm:justify-between gap-6 p-2 sm:p-8 sm:max-w-2xl sm:mx-auto">
+      <div className="flex flex-col sm:flex-row sm:items-center flex-wrap sm:justify-between gap-6 px-4 sm:px-8 py-2 sm:p-8 sm:max-w-3xl sm:mx-auto">
         {BOTTOM_LINKS.map((link, index) => (
           <NavLink
             key={index}

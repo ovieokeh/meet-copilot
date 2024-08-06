@@ -17,8 +17,8 @@ export default function ContactPage() {
   const hasUser = supabase.user;
 
   return (
-    <div className="min-h-[85dvh]">
-      <h1>Contact Us</h1>
+    <div className="min-h-[95dvh] py-12 px-8 flex flex-col gap-4">
+      <h1 className="text-3xl font-bold">Contact Us</h1>
 
       <p>Most questions can be answered by interacting with our chatbot.</p>
 

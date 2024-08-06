@@ -3,12 +3,6 @@ import { Link, useLocation } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { BiCookie } from "react-icons/bi";
 
-declare global {
-  interface Window {
-    gtag: any;
-  }
-}
-
 type Timezone = string;
 type Language = string;
 

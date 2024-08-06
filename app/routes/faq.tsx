@@ -13,7 +13,7 @@ export const meta: MetaFunction = () =>
 
 export default function CreditsPage() {
   return (
-    <div className="flex flex-col gap-8 min-h-[85dvh] text-slate-50  px-4 py-12 items-center">
+    <div className="flex flex-col gap-8 min-h-[95dvh] text-slate-50  px-4 py-12 items-center">
       <h1 className="text-3xl font-bold">Frequently Asked Questions</h1>
 
       <FAQView />

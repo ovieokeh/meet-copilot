@@ -39,27 +39,6 @@ export const MeetingsView = () => {
     </div>
   );
 
-  const HOW_TO_USE_MEET_COPILOT = [
-    {
-      text: "In another tab, start a meeting in whatever software you use",
-    },
-    {
-      text: 'Start a new meeting in Meet Copilot by clicking "Start a new meeting"',
-    },
-    {
-      text: 'You can then click "Share tab audio" to share the audio from the meeting tab created above',
-    },
-    {
-      text: 'Click the "Start recording" button to record your own speech',
-    },
-    {
-      text: "You will get live transcripts of the recordings",
-    },
-    {
-      text: "! Make sure you can always visibly see Meet Copilot in a tab during the meeting to get transcripts",
-    },
-  ];
-
   const USE_CASES = [
     {
       text: "Transcribe your meetings or interviews so you can reflect on them later",
@@ -78,17 +57,79 @@ export const MeetingsView = () => {
         Meetings
       </h2>
 
-      <div className="flex flex-col gap-6 pb-4 overflow-y-scroll no-scrollbar h-[calc(100dvh-66px)]">
-        <div className="flex flex-col gap-2">
+      <div className="flex sm:flex-row flex-col gap-6 h-[calc(100dvh-66px)] sm:justify-between">
+        <div className="flex flex-col gap-6 overflow-y-scroll no-scrollbar sm:w-1/2">
+          {!appContext.appSettings?.notionAccessToken ? (
+            <p className="text-sm text-slate-500 max-w-lg">
+              Tip: Sharing a Notion page in{" "}
+              <Link className="text-blue-500" to="/app/settings">
+                Settings
+              </Link>{" "}
+              with all the information you need for your interview will help
+              Meet Copilot provide you with the best insights!
+            </p>
+          ) : null}
+
+          <div className="flex flex-col gap-2">
+            {appContext && appContext.meetings ? (
+              <div className="flex flex-col gap-4">
+                {optionallyRenderComponent(
+                  !appContext.meetings.length,
+                  <>
+                    <h3 className="text-slate-800 font-bold flex items-center gap-2">
+                      No meetings yet
+                    </h3>
+
+                    {!appContext.appSettings?.googleAccessToken ? (
+                      <p className="">
+                        Connect your Calendar in{" "}
+                        <Link className="text-blue-500" to="/app/settings">
+                          Settings
+                        </Link>{" "}
+                        to display your upcoming interviews here (coming soon!)
+                      </p>
+                    ) : null}
+
+                    <p className="text-sm text-slate-500">
+                      Or create one with the big button below
+                    </p>
+                  </>,
+                )}
+
+                <div className="flex flex-col gap-2 ">
+                  {appContext.meetings.map((meeting) => (
+                    <Link
+                      key={`${meeting.id}-${meeting.userId}`}
+                      to={getMeetingLinkForScreenType(meeting.id, isMobile)}
+                      className={`flex items-center border w-fit border-slate-300 transition-colors hover:bg-slate-700 hover:text-slate-50 gap-2 text-sm py-2 px-3 rounded`}
+                    >
+                      {meeting.title}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+          </div>
+
+          {CREATE_NEW_SESSION_VIEW}
+        </div>
+
+        <div className="flex flex-col gap-2 sm:w-1/2">
           <h3 className="text-slate-800 font-bold flex items-center gap-2">
             How to use Meet Copilot
           </h3>
 
-          <ul className="list-disc list-inside">
-            {HOW_TO_USE_MEET_COPILOT.map((useCase, index) => (
-              <li key={index}>{useCase.text}</li>
-            ))}
-          </ul>
+          <video
+            className="max-w-3xl rounded"
+            src="/videos/new-meeting-demo.mp4"
+            controls
+          />
+
+          <p className="font-bold text-slate-800 max-w-lg">
+            Ensure that the Meet Copilot tab is always visible during the
+            meeting. This is due to browser restrictions on audio capture from
+            background tabs.
+          </p>
 
           <h3 className="text-slate-800 font-bold flex items-center gap-2">
             Use cases
@@ -100,60 +141,6 @@ export const MeetingsView = () => {
             ))}
           </ul>
         </div>
-
-        {!appContext.appSettings?.notionAccessToken ? (
-          <p className="text-sm text-slate-500 max-w-sm">
-            Tip: Sharing a Notion page in{" "}
-            <Link className="text-blue-500" to="/app/settings">
-              Settings
-            </Link>{" "}
-            with all the information you need for your interview will help Meet
-            Copilot provide you with the best insights!
-          </p>
-        ) : null}
-
-        <div className="flex flex-col gap-2 bg-slate-100 p-2 rounded h-[47%] overflow-y-scroll no-scrollbar">
-          {appContext && appContext.meetings ? (
-            <div className="flex flex-col gap-4 max-w-xl">
-              {optionallyRenderComponent(
-                !appContext.meetings.length,
-                <>
-                  <h3 className="text-slate-800 font-bold flex items-center gap-2">
-                    No meetings yet
-                  </h3>
-
-                  {!appContext.appSettings?.googleAccessToken ? (
-                    <p className="">
-                      Connect your Calendar in{" "}
-                      <Link className="text-blue-500" to="/app/settings">
-                        Settings
-                      </Link>{" "}
-                      to display your upcoming interviews here (coming soon!)
-                    </p>
-                  ) : null}
-
-                  <p className="text-sm text-slate-500">
-                    Or create one with the big button below
-                  </p>
-                </>,
-              )}
-
-              <div className="flex flex-wrap gap-2 ">
-                {appContext.meetings.map((meeting) => (
-                  <Link
-                    key={`${meeting.id}-${meeting.userId}`}
-                    to={getMeetingLinkForScreenType(meeting.id, isMobile)}
-                    className={`flex items-center border w-fit border-slate-300 transition-colors hover:bg-slate-700 hover:text-slate-50 gap-2 text-sm py-2 px-3 rounded`}
-                  >
-                    {meeting.title}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          ) : null}
-        </div>
-
-        {CREATE_NEW_SESSION_VIEW}
       </div>
     </div>
   );
