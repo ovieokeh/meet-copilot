@@ -138,7 +138,7 @@ const ConsentBanner = () => {
   return (
     <Transition show={bannerVisibility !== "hidden"}>
       {bannerVisibility === "minimized" ? (
-        <div className="fixed bottom-12 left-4 z-50">
+        <div className="fixed bottom-9 left-4 z-50">
           <button
             className="border-slate-50 bg-slate-200 text-slate-700 px-4 py-2 rounded-full"
             onClick={() => setBannerVisibility("expanded")}
@@ -147,7 +147,7 @@ const ConsentBanner = () => {
           </button>
         </div>
       ) : (
-        <div className="bg-slate-100 text-slate-900 p-4 fixed bottom-12 left-4 right-4 z-50 rounded">
+        <div className="bg-slate-100 text-slate-900 p-4 fixed bottom-9 left-4 right-4 z-50 rounded">
           <p className="flex flex-col gap-2">
             <span className="font-semibold">Cookie consent:</span>
             <span>
