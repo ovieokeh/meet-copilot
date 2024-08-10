@@ -79,3 +79,9 @@ export const optionallyRenderComponent = (
 export const getSystemStatusMessage = (isHealthy: boolean) => {
   return isHealthy ? "System is healthy" : "Please check the app settings";
 };
+
+export const renderStringBasedOnEnv = (prodUrl: string, sandboxUrl: string) => {
+  const protocal = window.location.protocol;
+  const isSecure = protocal === "https:";
+  return isSecure ? prodUrl : sandboxUrl;
+};

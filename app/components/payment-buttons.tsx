@@ -3,6 +3,7 @@ import { PayPalButtons } from "@paypal/react-paypal-js";
 import { FC } from "react";
 import { createToast } from "vercel-toast";
 import { useSupabase } from "~/contexts/supabase-context";
+import { renderStringBasedOnEnv } from "~/lib/utils";
 import { PaymentOrder } from "~/types";
 
 const PaymentButtons: FC<{
@@ -38,12 +39,10 @@ const PaymentButtons: FC<{
 
       supabase.fetchOrders!();
 
-      const protocal = window.location.protocol;
-      const isSecure = protocal === "https:";
-      const orderLinkBase = isSecure
-        ? "https://www.paypal.com/checkoutnow?token="
-        : "https://www.sandbox.paypal.com/checkoutnow?token=";
-      const orderLink = `${orderLinkBase}${responseJson.id}`;
+      const orderLink = renderStringBasedOnEnv(
+        `https://www.paypal.com/checkoutnow?token=${responseJson.id}`,
+        `https://www.sandbox.paypal.com/checkoutnow?token=${responseJson.id}`,
+      );
       window.open(orderLink, "_blank")?.focus();
 
       return responseJson.id;

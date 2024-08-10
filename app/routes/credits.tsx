@@ -5,6 +5,7 @@ import { SocialLoginButton } from "~/components/social-login-button";
 import { useSupabase } from "~/contexts/supabase-context";
 
 import { createMeta } from "~/helpers/create-meta";
+import { renderStringBasedOnEnv } from "~/lib/utils";
 
 export const meta: MetaFunction = () =>
   createMeta("Purchase Credits | Meet Copilot", "Meet Copilot auth view");
@@ -112,7 +113,10 @@ const AuthenticatedOrdersView = () => {
           </p>
           <p>
             <a
-              href={`https://www.sandbox.paypal.com/checkoutnow?token=${order.order_id}`}
+              href={renderStringBasedOnEnv(
+                `https://www.paypal.com/checkoutnow?token=${order.order_id}`,
+                `https://www.sandbox.paypal.com/checkoutnow?token=${order.order_id}`,
+              )}
               target="_blank"
               rel="noreferrer"
             >
