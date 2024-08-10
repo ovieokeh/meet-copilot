@@ -37,8 +37,13 @@ const PaymentButtons: FC<{
       }
 
       supabase.fetchOrders!();
-      // construct the orderLink using the response from the server
-      const orderLink = `https://www.sandbox.paypal.com/checkoutnow?token=${responseJson.id}`;
+
+      const protocal = window.location.protocol;
+      const isSecure = protocal === "https:";
+      const orderLinkBase = isSecure
+        ? "https://www.paypal.com/checkoutnow?token="
+        : "https://www.sandbox.paypal.com/checkoutnow?token=";
+      const orderLink = `${orderLinkBase}${responseJson.id}`;
       window.open(orderLink, "_blank")?.focus();
 
       return responseJson.id;
